@@ -1,0 +1,14 @@
+---
+- name: Make sure tools path exists
+  win_file:
+    path: "{{ tools_path }}\\diag\\dnSpy"
+    state: directory
+- name: Download dnSpy
+  win_get_url:
+    url: https://github.com/0xd4d/dnSpy/releases/download/v4.5.3/dnSpy.zip
+    dest: "{{ tools_path }}\\diag"
+- name: Extract dnSpy
+  win_unzip:
+    delete_archive: yes
+    src: "{{ tools_path }}\\diag\\dnSpy.zip"
+    dest: "{{ tools_path }}\\diag\\dnSpy"

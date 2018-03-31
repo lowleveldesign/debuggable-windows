@@ -5,4 +5,5 @@
 *.conf text eol=lf
 *.ps1 text eol=crlf
 *.yml text eol=lf
+*.j2 text eol=lf
 hosts text eol=lf

@@ -5,20 +5,9 @@
     state: directory
 - name: Download PerfView
   win_get_url:
-    url: https://github.com/Microsoft/perfview/releases/download/P2.0.7/PerfView.exe
-    dest: "{{ tools_path }}\\diag\\PerfView.exe"
-- name: Download PerfView debug symbols
-  win_get_url:
-    url: https://github.com/Microsoft/perfview/releases/download/P2.0.7/PerfView.pdb
-    dest: "{{ tools_path }}\\diag\\PerfView.pdb"
-- name: Download PerfView (x64)
-  win_get_url:
-    url: https://github.com/Microsoft/perfview/releases/download/P2.0.7/PerfView64.exe
-    dest: "{{ tools_path }}\\diag\\PerfView64.exe"
-- name: Download PerfView (x64) debug symbols
-  win_get_url:
-    url: https://github.com/Microsoft/perfview/releases/download/P2.0.7/PerfView64.pdb
-    dest: "{{ tools_path }}\\diag\\PerfView64.pdb"
+    url: https://github.com/Microsoft/perfview/releases/download/P2.0.7/{{ item }}
+    dest: "{{ tools_path }}\\diag\\{{ item }}"
+  loop: [ PerfView.exe, PerfView.pdb, PerfView64.exe, PerfView64.pdb ]
 - name: Updating PATH variable
   win_path:
     state: present

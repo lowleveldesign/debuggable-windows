@@ -1,9 +1,7 @@
 
-This repository contains Ansible scripts which will install and configure tools necessary to effectively debug and profile applications on Windows.
-
 # Provision Great Debugging Experience on Windows
 
-Table of contents:
+**Table of contents:**
 
 - [Requirements](#requirements)
 - [How to run the playbook](#how-to-run-the-playbook)
@@ -22,12 +20,12 @@ The playbook uses the following variables (you may modify them through command l
 
 Variable | Default Value | Description
 ---------|---------------|-------------
-tools_path | C:\tools | A folder where diagnostics tools will be downloaded and saved
-symbols_path | C:\symbols | A place for storing cached PDB debugging symbol files
-dump_path | C:\dumps | A place where procudmp will store dumps of the crashing applications
-choco_apps | [ 7zip, git ] | Chocolatey apps that should be installed while provisioning
-git_psmodules_tocheckout | [] | Git repositories that contain PowerShell modules that you want to use. Ansible will checkout them in the `{{ tools_path }}\powershell\modules` folder. This folder will be added to the user `PSModulePath` environment variable. The list should contain objects with **name** and **repo_url** properties, for example: `git_psmodules_tocheckout: [{ name: "WintellectPowerShell", repo_url: "https://github.com/Wintellect/WintellectPowerShell.git" }]`
-psmodules_toinstall | [] | Names of PowerShell modules which should be installed from the [PowerShell Gallery](https://www.powershellgallery.com/)
+**tools_path** | C:\tools | A folder where diagnostics tools will be downloaded and saved
+**symbols_path** | C:\symbols | A folder for storing cached PDB symbol files
+**dump_path** | C:\dumps | A place where procudmp will store dumps of the crashing applications
+**choco_apps** | [ 7zip, git ] | Chocolatey apps that should be installed while provisioning
+**git_psmodules_tocheckout** | [] | Git repositories that contain PowerShell modules that you want to use. Ansible will checkout them in the `{{ tools_path }}\powershell\modules` folder. This folder will be added to the user `PSModulePath` environment variable. The list should contain objects with **name** and **repo_url** properties, for example: `git_psmodules_tocheckout: [{ name: "WintellectPowerShell", repo_url: "https://github.com/Wintellect/WintellectPowerShell.git" }]`
+**psmodules_toinstall** | [] | Names of PowerShell modules which should be installed from the [PowerShell Gallery](https://www.powershellgallery.com/)
 
 Example provisioning command:
 
@@ -35,17 +33,143 @@ Example provisioning command:
 $ ansible-playbook -k -i hosts.yml playbook-debuggable-windows.yml --extra-vars "hosts=windows-local ansible_user=admin"
 ```
 
+It is safe to run the playbook multiple times. It is the recommended way to upgrade the tools included in the set.
+
 ## What's in the playbook
 
-Scripts from Inside Windows Debugging - mention that
+Almost all the tools are implemented as roles. You may comment out those that you don't like (`#` is a comment character in yaml). For instance, if you don't like Process Hacker (shame on you!) you may remove it from provisioning:
 
+```yaml
+  ...
+  roles:
+  - notepad2
+  - sysinternals
+  # - process-hacker
+  - debugging-tools
+  ...
+```
 
-Supports Windows 10 SDK only currently and x64 architecture
+### Notepad2.mod to replace notepad
 
-Sysinternals must precede  Process Hacker, otherwise Process Explorer will relace Process Hacker
+In playbook: role `notepad2`
+Original source: <https://github.com/XhmikosR/notepad2-mod>
+Downloaded to: `{{ tools_path }}\edit`
 
-Copy tools to diag folder if you want more tools (perfview etc.)
+A text editor similar to notepad on the outside, but much more powerful.
 
+### Sysinternals Suite
+
+In playbook: role `sysinternals`
+Orignal source: <https://download.sysinternals.com/files/SysinternalsSuite.zip>
+Downloaded to: `{{ tools_path }}\sysinternals`
+
+The whole Sysinternals Suite (with Nano versions), including tools such as **Process Monitor**, **Process Explorer**, or **psexec**. If you are a Windows administrator/developer it is a must-have. Apart from downloading the tools and adding them to the machine `PATH` variable, the scripts automatically:
+
+- accept EULA for most of them (so you can run them safely in non-interactive way), so you should [read it](https://docs.microsoft.com/en-us/sysinternals/license-terms) to know what you have just accepted
+- upload the dbghelp.dll version extracted from the Debugging Tools for Windows (it supports downloading symbols from MS servers) and configure symbols for Process Monitor and Process Explorer
+- replace Task Manager with Process Explorer
+- configure Procdump as a system debugger (AeDebug) - it will save 'MiniPlus' dumps under the `{{ dumps_path }}` folder
+- configure ZoomIt to start when system boots
+
+### Process Hacker
+
+In playbook: role `process-hacker`
+Original source: <https://wj32.org/processhacker/rel/processhacker-2.39-bin.zip>
+Downloaded to: `{{ tools_path }}\diag\processhacker`
+
+The script will also:
+
+- upload the dbghelp.dll version extracted from the Debugging Tools for Windows (it supports downloading symbols from MS servers) and configure Process Hacker to use it
+- replace Task Manager with Process Hacker
+- configure `_NT_SYMBOL_PATH`
+
+### Windows Debugging Tools Configuration
+
+In playbook: role `debugging-tools`
+Requirement: **Windows 10 SDK must be installed with Debugging Tools for Windows**
+
+The script adds Debugging Tools to the machine `PATH` variable and configures WinDbg theme. After runnning the scripts your WinDbg window will look as follows:
+
+![windbg](docs/windbg-theme.png)
+
+You will also have at your disposition the following plugins:
+
+Plugin name | Author/Source | Description
+------------|---------------|-------------
+mex | [Microsoft](https://www.microsoft.com/en-us/download/details.aspx?id=53304) | A lot of interesting commands from Microsoft support. Run `!mex.help` to learn more.
+PDE | [Andrew Richards](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip) | Another great plugin with commands to efficiently search through the process memory or analyze call stacks. It contains a bunch of utilities which will make your work with WinDbg easier.
+sosex | [Steve Johnson](http://www.stevestechspot.com/) | The best plugin to debug .NET applications
+NetExt | [Rodney Viana](https://github.com/rodneyviana/netext) | Another great plugin for debugging .NET applications, based on CLRMD
+psscor4 | [Microsoft](https://www.microsoft.com/en-us/download/details.aspx?id=21255) | A set of extension commands to SOS [.NET 4.0 and earlier]
+
+Additionally, a new context menu options be configured for the memory dump files. They will allow you to open the dump file in windbg (32-bit or 64-bit). The feature was presented by **Andrew Richards** in one of the episodes of the [Defrag Tools show](https://channel9.msdn.com/Shows/Defrag-Tools).
+
+**The script won't install Windows SDK and if none is found, all the tasks will be skipped**.
+
+### Windows Performance Toolkit Configuration
+
+In playbook: role `performance-toolkit`
+Requirement: **Windows 10 SDK must be installed with Windows Performance Toolkit**
+
+The script adds Windows Performance Toolkit folder to the machine `PATH`, configure cache for xperf symbols, and adds a number of scripts to simplify usage of the Xperf command (scripts downloaded from the **Andrew Richards** [OneDrive](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip)), such as `xperf - Collect CPU`, `xperf - Collect CPUWait`, etc.
+
+**The script won't install Windows SDK and if none is found, all the tasks will be skipped**.
+
+### dnSpy
+
+In playbook: role `dnspy`
+Original source: <https://github.com/0xd4d/dnSpy/releases>
+Downloaded to: `{{ tools_path }}\diag\dnSpy`
+
+### Perfview
+
+In playbook: role `perfview`
+Original source: <https://github.com/Microsoft/perfview/releases>
+Downloaded to: `{{ tools_path }}\diag`
+
+### Wtrace
+
+In playbook: role `wtrace`
+Original source: <https://github.com/lowleveldesign/wtrace/releases>
+Downloaded to: `{{ tools_path }}\diag`
+
+### Command Line Configuration
+
+In playbook: role `cmd`
+
+Configures settings of the default command line window. Switches the font to Consolas, makes the font bigger, increments the history depth, enables the quick edit mode, and much more.
+
+### PowerShell Configuration
+
+In playbook: role `powershell`
+
+Adds the `{{ tools_path }}\powershell\modules` folder to the `PSModulePath` system variables and checks out to it the repositories specified in the `git_psmodules_tocheckout` list. It will also install from the Powershell Gallery all the modules which names are in the `psmodules_toinstall` list.
+
+### Touchcursor
+
+In playbook: role `touchcursor` (disabled by default)
+Original source: <https://sourceforge.net/projects/touchcursor/files/1.7.1/TouchCursor-1.7.1.zip/download>
+Downloaded to: `{{ tools_path }}\utils`
+
+A word of explanation: this tool is not really a debugging tool (that's why it is disabled by default). I am a vim-syntax addict and wanted to have at least navigation keys available in application windows. Touchcursor allows you to do that by using a control key, such as space. Some of the mappings installed with this role (remember to enable it!) are:
+
+- {space} + j - down arrow
+- {space} + k - up arrow
+- {space} + l - right arrow
+- {space} + h - left arrow
+- {space} + x - delete
+- {space} + u - ctrl + pageup
+- {space} + t - ctrl + tab
+- {space} + 6/^ - home
+- {space} + 4/$ - end
+
+### Error Code Lookup
+
+In playbook: an inline task
+Original source: <https://download.microsoft.com/download/2/7/9/279ed965-1acb-4449-9054-46900909b401/Err.EXE>
+Downloaded to: `{{ tools_path }}\diag`
+
+A great tool to lookup Windows error codes.
 
 ## Contributions
 

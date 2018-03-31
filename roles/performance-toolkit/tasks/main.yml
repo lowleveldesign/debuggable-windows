@@ -14,15 +14,15 @@
 - debug:
     msg: "{{ 'WPT found' if wpt_info.stat.exists else 'WPT not found - all tasks will be skipped' }}"
   when: sdk_info.exists
-- name: Copy Inside Windows Debugging scripts to remote
+- name: Upload scripts
   win_copy:
-    src: "inside-windows-debugging.zip"
+    src: "scripts.zip"
     dest: "{{ wpt_info.stat.path }}\\"
   when: sdk_info.exists and wpt_info.stat.exists
-- name: Unpack Inside Windows Debugging scripts to the WPT folder
+- name: Unpack scripts to the WPT folder
   win_unzip:
     delete_archive: yes
-    src: "{{ wpt_info.stat.path }}\\inside-windows-debugging.zip"
+    src: "{{ wpt_info.stat.path }}\\scripts.zip"
     dest: "{{ wpt_info.stat.path }}\\"
   when: sdk_info.exists and wpt_info.stat.exists
 - name: Prepare WPT symbols folder

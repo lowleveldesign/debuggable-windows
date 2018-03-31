@@ -100,6 +100,28 @@
     src: "{{ dbgtools_info.stat.path }}\\winext_x64.zip"
     dest: "{{ dbgtools_info.stat.path }}\\winext\\"
   when: sdk_info.exists and dbgtools_info.stat.exists
+- name: Download sosex (x86)
+  win_get_url:
+    url: http://www.stevestechspot.com/downloads/sosex_32.zip
+    dest: "{{ dbgtools_info_x86.stat.path }}\\"
+  when: sdk_info.exists and dbgtools_info_x86.stat.exists
+- name: Unpack sosex (x86)
+  win_unzip:
+    delete_archive: yes
+    src: "{{ dbgtools_info_x86.stat.path }}\\sosex_32.zip"
+    dest: "{{ dbgtools_info_x86.stat.path }}\\winext"
+  when: sdk_info.exists and dbgtools_info_x86.stat.exists
+- name: Download sosex (x64)
+  win_get_url:
+    url: http://www.stevestechspot.com/downloads/sosex_64.zip
+    dest: "{{ dbgtools_info.stat.path }}\\"
+  when: sdk_info.exists and dbgtools_info.stat.exists
+- name: Unpack sosex (x64)
+  win_unzip:
+    delete_archive: yes
+    src: "{{ dbgtools_info.stat.path }}\\sosex_64.zip"
+    dest: "{{ dbgtools_info.stat.path }}\\winext"
+  when: sdk_info.exists and dbgtools_info.stat.exists
 - name: Prepare external symbols folder
   win_file: 
     path: "{{ symbols_path }}\\dbg"
@@ -123,3 +145,10 @@
     scope: machine
     elements: "{{ dbgtools_info.stat.path }}"
   when: sdk_info.exists and dbgtools_info.stat.exists
+- name: Prepare dump context menu registry settings
+  template:
+    newline_sequence: \r\n
+    src: windbg-ia-pde.j2
+    dest: "{{ dbgtools_info.stat.path }}\\windbg-ia-pde.reg"
+- name: Install dump context menu (by Andrew Richards)
+  win_command: reg import "{{ dbgtools_info.stat.path }}\\windbg-ia-pde.reg"

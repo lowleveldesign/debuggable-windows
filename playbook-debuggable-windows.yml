@@ -1,0 +1,50 @@
+- hosts: "{{ hosts }}"
+  gather_facts: no
+
+  pre_tasks:
+  - name: Create folders
+    win_file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+    - "{{ tools_path }}"
+    - "{{ tools_path }}\\diag"
+    - "{{ dump_path }}"
+    - "{{ symbols_path }}"
+  - name: Install Chocolatey packages
+    win_chocolatey:
+      name: "{{ item }}"
+      state: latest
+    with_items: "{{ choco_apps }}"
+
+  roles:
+  - notepad2
+  - process-hacker
+  - sysinternals
+  - debugging-tools
+  - performance-toolkit
+  - perfview
+  - wtrace
+  - cmd
+  - powershell
+  - touchcursor
+
+  post_tasks:
+  - name: Adding additional folders to PATH variable
+    win_path:
+      state: present
+      scope: machine
+      elements: [ 
+                  "{{ tools_path }}\\diag",  
+                  "%SYSTEMROOT%\\Microsoft.NET\\Framework64\\v4.0.30319"
+                ]
+  - name: Disable GAC view in Windows Explorer
+    win_regedit: 
+      path: HKLM:\Software\Microsoft\Fusion
+      name: DisableCacheViewer
+      type: dword
+      data: 1
+  - name: Download Error Code Lookup tool (err.exe)
+    win_get_url: 
+      url: https://download.microsoft.com/download/2/7/9/279ed965-1acb-4449-9054-46900909b401/Err.EXE
+      dest: "{{ tools_path }}\\diag\\err.exe"

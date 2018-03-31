@@ -1,0 +1,19 @@
+ansible_connection: winrm
+ansible_winrm_transport: basic
+# The following is necessary for Python 2.7.9+ (or any older Python that has backported SSLContext, eg, Python 2.7.5 on RHEL7) when using default WinRM self-signed certificates:
+ansible_winrm_server_cert_validation: ignore
+
+# path where the tools are stored
+tools_path: c:\tools
+# path where the debug symbols will reside
+symbols_path: C:\symbols
+# path where prodcump will save dumps of fauly processes
+dump_path: C:\dumps
+
+choco_apps: 
+- 7zip
+- git
+
+git_psmodules_tocheckout: []
+
+psmodules_toinstall: []

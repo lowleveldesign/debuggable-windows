@@ -1,0 +1,4 @@
+*.retry
+
+group_vars/*
+!group_vars/all.yml

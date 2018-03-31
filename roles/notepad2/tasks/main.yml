@@ -1,0 +1,28 @@
+---
+- name: Make sure tools path exists
+  win_file:
+    path: "{{ tools_path }}\\edit"
+    state: directory
+- name: Download Notepad2.mod
+  win_get_url:
+    url: https://github.com/XhmikosR/notepad2-mod/releases/download/4.2.25.998/Notepad2-mod.4.2.25.998_{{ item }}.zip
+    dest: "{{ tools_path }}\\notepad2_{{ item }}.zip"
+  with_items: [ x64, x86 ]
+- name: Unzip binaries 
+  win_unzip:
+    delete_archive: yes
+    src: "{{ tools_path }}\\notepad2_{{ item }}.zip"
+    dest: "{{ tools_path }}\\edit\\notepad2_{{ item }}"
+  with_items: [ x64, x86 ]
+- name: Replace notepad with notepad2 (x64)
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe
+    name: Debugger
+    type: string
+    data: "\"{{ tools_path }}\\edit\\notepad2_x64\\notepad2.exe\" /z"
+- name: Replace notepad with notepad2 (x86)
+  win_regedit:
+    path: HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe
+    name: Debugger
+    type: string
+    data: "\"{{ tools_path }}\\edit\\notepad2_x86\\notepad2.exe\" /z"

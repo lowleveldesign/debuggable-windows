@@ -1,0 +1,4 @@
+# path where the tools are stored
+tools_path: C:\tools
+# path where the debug symbols will reside
+symbols_path: C:\symbols

@@ -1,0 +1,59 @@
+---
+- name: Get Windows SDK path
+  win_reg_stat:
+    path: HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows Kits\Installed Roots
+    name: KitsRoot10
+  register: sdk_info
+- debug:
+    msg: "{{ 'SDK found at ' + sdk_info.value | quote if sdk_info.exists else 'SDK not found' }}"
+- name: Get WPT path
+  win_stat:
+    path: "{{ sdk_info.value }}Windows Performance Toolkit"
+  register: wpt_info
+  when: sdk_info.exists
+- debug:
+    msg: "{{ 'WPT found' if wpt_info.stat.exists else 'WPT not found - all tasks will be skipped' }}"
+  when: sdk_info.exists
+- name: Copy Inside Windows Debugging scripts to remote
+  win_copy:
+    src: "inside-windows-debugging.zip"
+    dest: "{{ wpt_info.stat.path }}\\"
+  when: sdk_info.exists and wpt_info.stat.exists
+- name: Unpack Inside Windows Debugging scripts to the WPT folder
+  win_unzip:
+    delete_archive: yes
+    src: "{{ wpt_info.stat.path }}\\inside-windows-debugging.zip"
+    dest: "{{ wpt_info.stat.path }}\\"
+  when: sdk_info.exists and wpt_info.stat.exists
+- name: Prepare WPT symbols folder
+  win_file:
+    path: "{{ symbols_path }}\\xperf"
+    state: directory
+  when: sdk_info.exists and wpt_info.stat.exists
+- name: Set _NT_SYMCACHE_PATH
+  win_environment:
+    state: present
+    name: _NT_SYMCACHE_PATH
+    level: machine
+    value: "{{ symbols_path}}\\xperf"
+  when: sdk_info.exists and wpt_info.stat.exists
+- name: Prepare external symbols folder
+  win_file: 
+    path: "{{ symbols_path }}\\dbg"
+    state: directory
+- name: Prepare private symbols folder
+  win_file:
+    path: "{{ symbols_path }}\\private"
+    state: directory
+- name: Set _NT_SYMBOL_PATH
+  win_environment:
+    state: present
+    name: _NT_SYMBOL_PATH
+    level: machine
+    value: "{{ symbols_path}}\\private;SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
+- name: Setting PATH variable
+  win_path:
+    state: present
+    scope: machine
+    elements: "{{ wpt_info.stat.path }}"
+  when: sdk_info.exists and wpt_info.stat.exists

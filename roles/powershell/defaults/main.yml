@@ -1,0 +1,8 @@
+---
+tools_path: c:\tools
+
+# a list of names of modules you would like to install
+psmodules_toinstall: []
+
+# a list of objects with properies: name, repo_url
+git_psmodules_tocheckout: []

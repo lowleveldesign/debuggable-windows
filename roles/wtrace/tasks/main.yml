@@ -1,0 +1,28 @@
+---
+- name: Make sure tools path exists
+  win_file:
+    path: "{{ tools_path }}\\diag"
+    state: directory
+- name: Download wtrace
+  win_get_url:
+    url: https://github.com/lowleveldesign/wtrace/releases/download/2.2/wtrace.zip
+    dest: "{{ tools_path }}\\diag"
+- name: Extract wtrace
+  win_unzip:
+    delete_archive: yes
+    src: "{{ tools_path }}\\diag\\wtrace.zip"
+    dest: "{{ tools_path }}\\diag\\"
+- name: Move wtrace to parent folder
+  win_copy:
+    src: "{{ tools_path }}\\diag\\wtrace\\wtrace.exe"
+    remote_src: yes
+    dest: "{{ tools_path }}\\diag\\"
+- name: Remove wtrace download folder
+  win_file:
+    path: "{{ tools_path }}\\diag\\wtrace"
+    state: absent
+- name: Updating PATH variable
+  win_path:
+    state: present
+    scope: machine
+    elements: "{{ tools_path }}\\diag"

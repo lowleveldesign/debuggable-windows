@@ -1,0 +1,5 @@
+[windows-local]
+mywin ansible_host=localhost ansible_port=5986
+
+[windows-virtualbox]
+vbox ansible_host=localhost ansible_port=55986

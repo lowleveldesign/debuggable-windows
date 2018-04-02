@@ -51,41 +51,39 @@ Almost all the tools are implemented as roles. You may comment out those that yo
 
 ### Notepad2.mod to replace notepad
 
-In playbook: role `notepad2`
-Original source: <https://github.com/XhmikosR/notepad2-mod>
-Downloaded to: `{{ tools_path }}\edit`
+- In playbook: role `notepad2`
+- Original source: <https://github.com/XhmikosR/notepad2-mod>
+- Downloaded to: `{{ tools_path }}\edit`
 
 A text editor similar to notepad on the outside, but much more powerful.
 
 ### Sysinternals Suite
 
-In playbook: role `sysinternals`
-Orignal source: <https://download.sysinternals.com/files/SysinternalsSuite.zip>
-Downloaded to: `{{ tools_path }}\sysinternals`
+- In playbook: role `sysinternals`
+- Orignal source: <https://download.sysinternals.com/files/SysinternalsSuite.zip>
+- Downloaded to: `{{ tools_path }}\sysinternals`
 
 The whole Sysinternals Suite (with Nano versions), including tools such as **Process Monitor**, **Process Explorer**, or **psexec**. If you are a Windows administrator/developer it is a must-have. Apart from downloading the tools and adding them to the machine `PATH` variable, the scripts automatically:
 
 - accept EULA for most of them (so you can run them safely in non-interactive way), so you should [read it](https://docs.microsoft.com/en-us/sysinternals/license-terms) to know what you have just accepted
-- upload the dbghelp.dll version extracted from the Debugging Tools for Windows (it supports downloading symbols from MS servers) and configure symbols for Process Monitor and Process Explorer
 - replace Task Manager with Process Explorer
 - configure Procdump as a system debugger (AeDebug) - it will save 'MiniPlus' dumps under the `{{ dumps_path }}` folder
 
 ### Process Hacker
 
-In playbook: role `process-hacker`
-Original source: <https://wj32.org/processhacker/rel/processhacker-2.39-bin.zip>
-Downloaded to: `{{ tools_path }}\diag\processhacker`
+- In playbook: role `process-hacker`
+- Original source: <https://wj32.org/processhacker/rel/processhacker-2.39-bin.zip>
+- Downloaded to: `{{ tools_path }}\diag\processhacker`
 
 The script will also:
 
-- upload the dbghelp.dll version extracted from the Debugging Tools for Windows (it supports downloading symbols from MS servers) and configure Process Hacker to use it
 - replace Task Manager with Process Hacker
 - configure `_NT_SYMBOL_PATH`
 
 ### Windows Debugging Tools Configuration
 
-In playbook: role `debugging-tools`
-Requirement: **Windows SDK must be installed with Debugging Tools for Windows**
+- In playbook: role `debugging-tools`
+- Requirement: **Windows SDK must be installed with Debugging Tools for Windows**
 
 The script adds Debugging Tools to the machine `PATH` variable and configures WinDbg theme. After runnning the scripts your WinDbg window will look as follows:
 
@@ -107,8 +105,8 @@ Additionally, a new context menu options be configured for the memory dump files
 
 ### Windows Performance Toolkit Configuration
 
-In playbook: role `performance-toolkit`
-Requirement: **Windows 10/8.1 SDK must be installed with Windows Performance Toolkit**
+- In playbook: role `performance-toolkit`
+- Requirement: **Windows 10/8.1 SDK must be installed with Windows Performance Toolkit**
 
 The script adds Windows Performance Toolkit folder to the machine `PATH`, configure cache for xperf symbols, and adds a number of scripts to simplify usage of the Xperf command (scripts downloaded from the **Andrew Richards** [OneDrive](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip)), such as `xperf - Collect CPU`, `xperf - Collect CPUWait`, etc.
 
@@ -116,39 +114,39 @@ The script adds Windows Performance Toolkit folder to the machine `PATH`, config
 
 ### dnSpy
 
-In playbook: role `dnspy`
-Original source: <https://github.com/0xd4d/dnSpy/releases>
-Downloaded to: `{{ tools_path }}\diag\dnSpy`
+- In playbook: role `dnspy`
+- Original source: <https://github.com/0xd4d/dnSpy/releases>
+- Downloaded to: `{{ tools_path }}\diag\dnSpy`
 
 ### Perfview
 
-In playbook: role `perfview`
-Original source: <https://github.com/Microsoft/perfview/releases>
-Downloaded to: `{{ tools_path }}\diag`
+- In playbook: role `perfview`
+- Original source: <https://github.com/Microsoft/perfview/releases>
+- Downloaded to: `{{ tools_path }}\diag`
 
 ### Wtrace
 
-In playbook: role `wtrace`
-Original source: <https://github.com/lowleveldesign/wtrace/releases>
-Downloaded to: `{{ tools_path }}\diag`
+- In playbook: role `wtrace`
+- Original source: <https://github.com/lowleveldesign/wtrace/releases>
+- Downloaded to: `{{ tools_path }}\diag`
 
 ### Command Line Configuration
 
-In playbook: role `cmd`
+- In playbook: role `cmd`
 
 Configures settings of the default command line window. Switches the font to Consolas, makes the font bigger, increments the history depth, enables the quick edit mode, and much more.
 
 ### PowerShell Configuration
 
-In playbook: role `powershell`
+- In playbook: role `powershell`
 
 Adds the `{{ tools_path }}\powershell\modules` folder to the `PSModulePath` system variables and checks out to it the repositories specified in the `git_psmodules_tocheckout` list. It will also install from the Powershell Gallery all the modules which names are in the `psmodules_toinstall` list.
 
 ### Touchcursor
 
-In playbook: role `touchcursor` (disabled by default)
-Original source: <https://sourceforge.net/projects/touchcursor/files/1.7.1/TouchCursor-1.7.1.zip/download>
-Downloaded to: `{{ tools_path }}\utils`
+- In playbook: role `touchcursor` **(disabled by default)**
+- Original source: <https://sourceforge.net/projects/touchcursor/files/1.7.1/TouchCursor-1.7.1.zip/download>
+- Downloaded to: `{{ tools_path }}\utils`
 
 A word of explanation: this tool is not really a debugging tool (that's why it is disabled by default). I am a vim-syntax addict and wanted to have at least navigation keys available in application windows. Touchcursor allows you to do that by using a control key, such as space. Some of the mappings installed with this role (remember to enable it!) are:
 
@@ -164,9 +162,9 @@ A word of explanation: this tool is not really a debugging tool (that's why it i
 
 ### Error Code Lookup
 
-In playbook: role `err`
-Original source: <https://download.microsoft.com/download/2/7/9/279ed965-1acb-4449-9054-46900909b401/Err.EXE>
-Downloaded to: `{{ tools_path }}\diag`
+- In playbook: role `err`
+- Original source: <https://download.microsoft.com/download/2/7/9/279ed965-1acb-4449-9054-46900909b401/Err.EXE>
+- Downloaded to: `{{ tools_path }}\diag`
 
 A great tool to lookup Windows error codes.
 

@@ -12,20 +12,16 @@
     delete_archive: yes
     src: "{{ tools_path }}\\diag\\processhacker-2.39-bin.zip"
     dest: "{{ tools_path }}\\diag\\processhacker"
-- name: Copy dbghelp.dll
-  win_copy:
-    src: dbghelp_{{ item }}.dll
-    dest: "{{ tools_path }}\\diag\\processhacker\\{{ item }}\\dbghelp.dll"
-  with_items: [ x86, x64 ]
-- name: Process Hacker appdata folder
-  win_file:
-    path: "%APPDATA%\\Process Hacker 2"
-    state: directory
-- name: Process Hacker configuration files
-  win_template:
-    src: "{{ item }}"
-    dest: "%APPDATA%\\Process Hacker 2\\{{ item | replace('.j2', '') }}"
-  with_items: [ usernotesdb.xml.j2, settings.xml.j2 ]
+# FIXME: to uncomment after I fix the dbghelp problem
+#- name: Process Hacker appdata folder
+#  win_file:
+#    path: "%APPDATA%\\Process Hacker 2"
+#    state: directory
+#- name: Process Hacker configuration files
+#  win_template:
+#    src: "{{ item }}"
+#    dest: "%APPDATA%\\Process Hacker 2\\{{ item | replace('.j2', '') }}"
+#  with_items: [ usernotesdb.xml.j2, settings.xml.j2 ]
 - name: Prepare external symbols folder
   win_file: 
     path: "{{ symbols_path }}\\dbg"

@@ -17,10 +17,6 @@
     src: "{{ tools_path }}\\{{ item }}"
     dest: "{{ tools_path }}\\sysinternals"
   with_items: [ SysinternalsSuite.zip, SysinternalsSuite-Nano.zip ]
-- name: Copy dbghelp
-  win_copy:
-    src: dbghelp_x64.dll
-    dest: "{{ tools_path }}\\sysinternals\\dbghelp.dll"
 - name: Agree to EULA
   win_regedit:
     path: HKCU:\Software\Sysinternals\{{ item }}
@@ -60,24 +56,26 @@
   win_file:
     path: "{{ symbols_path }}\\private"
     state: directory
-- name: Configure dbghelp path in Process Monitor
-  win_regedit:
-    path: HKCU:\Software\Sysinternals\Process Monitor
-    name: DbgHelpPath
-    type: string
-    data: "{{ tools_path }}\\sysinternals\\dbghelp.dll"
+# FIXME: uncomment I fix the dbghelp problem
+#- name: Configure dbghelp path in Process Monitor
+#  win_regedit:
+#    path: HKCU:\Software\Sysinternals\Process Monitor
+#    name: DbgHelpPath
+#    type: string
+#    data: "{{ tools_path }}\\sysinternals\\dbghelp.dll"
 - name: Configure symbols path in Process Monitor
   win_regedit:
     path: HKCU:\Software\Sysinternals\Process Monitor
     name: SymbolPath
     type: string
     data: "{{ symbols_path}}\\private;SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
-- name: Configure dbghelp path in Process Explorer
-  win_regedit:
-    path: HKCU:\Software\Sysinternals\Process Explorer
-    name: DbgHelpPath
-    type: string
-    data: "{{ tools_path }}\\sysinternals\\dbghelp.dll"
+# FIXME: uncomment I fix the dbghelp problem
+#- name: Configure dbghelp path in Process Explorer
+#  win_regedit:
+#    path: HKCU:\Software\Sysinternals\Process Explorer
+#    name: DbgHelpPath
+#    type: string
+#    data: "{{ tools_path }}\\sysinternals\\dbghelp.dll"
 - name: Configure symbols path in Process Monitor
   win_regedit:
     path: HKCU:\Software\Sysinternals\Process Explorer

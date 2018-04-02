@@ -164,7 +164,7 @@ A word of explanation: this tool is not really a debugging tool (that's why it i
 
 ### Error Code Lookup
 
-In playbook: an inline task
+In playbook: role `err`
 Original source: <https://download.microsoft.com/download/2/7/9/279ed965-1acb-4449-9054-46900909b401/Err.EXE>
 Downloaded to: `{{ tools_path }}\diag`
 

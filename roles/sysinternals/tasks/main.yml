@@ -89,15 +89,16 @@
     state: present
     scope: machine
     elements: "{{ tools_path }}\\sysinternals"
-- name: Run ZoomIt on start
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
-    name: ZoomIt
-    type: string
-    data: "{{ tools_path }}\\sysinternals\\ZoomIt.exe"
+#- name: Run ZoomIt on start
+#  win_regedit:
+#    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
+#    name: ZoomIt
+#    type: string
+#    data: "{{ tools_path }}\\sysinternals\\ZoomIt.exe"
 - name: Configure ProcDump as system debugger (AeDebug)
   win_shell: "{{ tools_path }}\\sysinternals\\procdump.exe -i {{ dump_path }} -mp"
   register: procdump_res
+  ignore_errors: yes # FIXME: sometimes fails - to diagnose
 - debug:
     msg: "{{ procdump_res.stdout }}"
 - name: Replace Task Explorer with Process Explrer

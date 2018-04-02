@@ -14,6 +14,11 @@
     src: "{{ tools_path }}\\notepad2_{{ item }}.zip"
     dest: "{{ tools_path }}\\edit\\notepad2_{{ item }}"
   with_items: [ x64, x86 ]
+- name: Update config files
+  win_copy:
+    src: Notepad2.ini
+    dest: "{{ tools_path }}\\edit\\notepad2_{{ item }}\\"
+  loop: [ x64, x86 ]
 - name: Replace notepad with notepad2 (x64)
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe

@@ -1,0 +1,21 @@
+---
+- name: Make sure tools path exists
+  win_file:
+    path: "{{ tools_path }}\\diag"
+    state: directory
+- name: Download Error Code Lookup tool (err.exe)
+  win_get_url: 
+    url: https://download.microsoft.com/download/2/7/9/279ed965-1acb-4449-9054-46900909b401/Err.EXE
+    dest: "{{ tools_path }}\\diag\\err.zip"
+- name: Upload 7z binary
+  win_copy:
+    src: 7z.exe
+    dest: "{{ tools_path }}\\diag\\"
+- name: Unpack Error Code Lookup tool
+  win_command: ".\\7z.exe e -o\"{{ tools_path }}\\diag\" -y \"{{ tools_path }}\\diag\\err.zip\""
+  args:
+    chdir: "{{ tools_path }}\\diag"
+- name: Remove 7z binary
+  win_file:
+    dest: "{{ tools_path }}\\diag\\7z.exe"
+    state: absent

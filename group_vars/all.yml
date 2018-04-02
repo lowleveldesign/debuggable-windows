@@ -10,9 +10,7 @@ symbols_path: C:\symbols
 # path where prodcump will save dumps of fauly processes
 dump_path: C:\dumps
 
-choco_apps: 
-- 7zip
-- git
+choco_apps: []
 
 git_psmodules_tocheckout: []
 

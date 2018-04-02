@@ -30,5 +30,7 @@ Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\WinDbg.DumpFile.1\shell\Open_x86]
 @="Open x&86"
 
+{% if dbgtools_info_x86.stat.exists %}
 [HKEY_CLASSES_ROOT\WinDbg.DumpFile.1\shell\Open_x86\command]
 @="\"{{ dbgtools_info_x86.stat.path }}\\windbg.exe\" -z \"%1\" -a pde.dll"
+{% endif %}

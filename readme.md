@@ -10,7 +10,7 @@
 
 ## Requirements
 
-Currently, the scripts support **64-bit** systems only. You will need an Ansible host, which could be [a Linux box](http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) or [Windows Subsystem for Linux](http://docs.ansible.com/ansible/latest/user_guide/windows_faq.html?highlight=windows%20subsystem#can-ansible-run-on-windows). You also need to configure the Windows machine to meet Ansible requirements as explained in [the Ansible documentation](http://docs.ansible.com/ansible/latest/user_guide/windows_setup.html).
+Currently, the scripts support **64-bit** systems only. You will need an Ansible host, which could be [a Linux box](http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) or [Windows Subsystem for Linux](http://docs.ansible.com/ansible/latest/user_guide/windows_faq.html?highlight=windows%20subsystem#can-ansible-run-on-windows). You also need to configure the Windows machine to meet Ansible requirements as explained in [the Ansible documentation](http://docs.ansible.com/ansible/latest/user_guide/windows_setup.html). You must also install .NET 4.5+ (previous versions did not support TLS 1.2) and Powershell 3+.
 
 ## How to run the playbook
 
@@ -69,7 +69,6 @@ The whole Sysinternals Suite (with Nano versions), including tools such as **Pro
 - upload the dbghelp.dll version extracted from the Debugging Tools for Windows (it supports downloading symbols from MS servers) and configure symbols for Process Monitor and Process Explorer
 - replace Task Manager with Process Explorer
 - configure Procdump as a system debugger (AeDebug) - it will save 'MiniPlus' dumps under the `{{ dumps_path }}` folder
-- configure ZoomIt to start when system boots
 
 ### Process Hacker
 
@@ -86,7 +85,7 @@ The script will also:
 ### Windows Debugging Tools Configuration
 
 In playbook: role `debugging-tools`
-Requirement: **Windows 10 SDK must be installed with Debugging Tools for Windows**
+Requirement: **Windows SDK must be installed with Debugging Tools for Windows**
 
 The script adds Debugging Tools to the machine `PATH` variable and configures WinDbg theme. After runnning the scripts your WinDbg window will look as follows:
 
@@ -109,7 +108,7 @@ Additionally, a new context menu options be configured for the memory dump files
 ### Windows Performance Toolkit Configuration
 
 In playbook: role `performance-toolkit`
-Requirement: **Windows 10 SDK must be installed with Windows Performance Toolkit**
+Requirement: **Windows 10/8.1 SDK must be installed with Windows Performance Toolkit**
 
 The script adds Windows Performance Toolkit folder to the machine `PATH`, configure cache for xperf symbols, and adds a number of scripts to simplify usage of the Xperf command (scripts downloaded from the **Andrew Richards** [OneDrive](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip)), such as `xperf - Collect CPU`, `xperf - Collect CPUWait`, etc.
 

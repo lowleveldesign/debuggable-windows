@@ -56,26 +56,26 @@
   win_file:
     path: "{{ symbols_path }}\\private"
     state: directory
-# FIXME: uncomment I fix the dbghelp problem
-#- name: Configure dbghelp path in Process Monitor
-#  win_regedit:
-#    path: HKCU:\Software\Sysinternals\Process Monitor
-#    name: DbgHelpPath
-#    type: string
-#    data: "{{ tools_path }}\\sysinternals\\dbghelp.dll"
+- name: Configure dbghelp path in Process Monitor
+  win_regedit:
+    path: HKCU:\Software\Sysinternals\Process Monitor
+    name: DbgHelpPath
+    type: string
+    data: "{{ dbgtools_path }}\\dbghelp.dll"
+  when: dbgtools_path != ''
 - name: Configure symbols path in Process Monitor
   win_regedit:
     path: HKCU:\Software\Sysinternals\Process Monitor
     name: SymbolPath
     type: string
     data: "{{ symbols_path}}\\private;SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
-# FIXME: uncomment I fix the dbghelp problem
-#- name: Configure dbghelp path in Process Explorer
-#  win_regedit:
-#    path: HKCU:\Software\Sysinternals\Process Explorer
-#    name: DbgHelpPath
-#    type: string
-#    data: "{{ tools_path }}\\sysinternals\\dbghelp.dll"
+- name: Configure dbghelp path in Process Explorer
+  win_regedit:
+    path: HKCU:\Software\Sysinternals\Process Explorer
+    name: DbgHelpPath
+    type: string
+    data: "{{ dbgtools_path }}\\dbghelp.dll"
+  when: dbgtools_path != ''
 - name: Configure symbols path in Process Monitor
   win_regedit:
     path: HKCU:\Software\Sysinternals\Process Explorer

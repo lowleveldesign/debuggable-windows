@@ -16,6 +16,7 @@
       name: "{{ item }}"
       state: latest
     with_items: "{{ choco_apps }}"
+  - import_tasks: locate-debugging-tools.yml
 
   roles:
   - err

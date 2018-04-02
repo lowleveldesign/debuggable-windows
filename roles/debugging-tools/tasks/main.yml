@@ -1,48 +1,4 @@
 ---
-- name: Get Windows 10 SDK path
-  win_reg_stat:
-    path: HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows Kits\Installed Roots
-    name: KitsRoot10
-  register: sdk_info_10
-- name: Get Windows 8.1 SDK path
-  win_reg_stat:
-    path: HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows Kits\Installed Roots
-    name: KitsRoot81
-  register: sdk_info_81
-- name: Find SDK
-  set_fact:
-    sdk_info: "{{ sdk_info_10 if sdk_info_10.exists else sdk_info_81 }}"
-- debug:
-    msg: "{{ 'SDK found at ' + sdk_info.value | quote if sdk_info.exists else 'SDK not found' }}"
-- name: Get Debugging Tools path (x86)
-  win_stat:
-    path: "{{ sdk_info.value }}Debuggers\\x86"
-  register: dbgtools_sdk_info_x86
-  when: sdk_info.exists
-- name: Get Debugging Tools legacy path (x86)
-  win_stat:
-    path: "%PROGRAMFILES%\\Debugging Tools For Windows"
-  register: dbgtools_legacy_info_x86
-- name: Find Debugging Tools Path (x86)
-  set_fact:
-    dbgtools_info_x86: "{{ dbgtools_legacy_info_x86 if dbgtools_sdk_info_x86 is skipped 
-                           else dbgtools_sdk_info_x86 }}"
-- name: Get Debugging Tools path (x64)
-  win_stat:
-    path: "{{ sdk_info.value }}Debuggers\\x64"
-  register: dbgtools_sdk_info
-  when: sdk_info.exists
-- name: Get Debugging Tools legacy path (x64)
-  win_stat:
-    path: "%PROGRAMFILES%\\Debugging Tools For Windows (x64)"
-  register: dbgtools_legacy_info
-- name: Find Debugging Tools Path (x64)
-  set_fact:
-    dbgtools_info: "{{ dbgtools_legacy_info if dbgtools_sdk_info is skipped else dbgtools_sdk_info }}"
-- debug:
-    msg: "{{ 'Debugging Tools found at ' + dbgtools_info.stat.path | quote if dbgtools_info.stat.exists 
-             else 'Debugging Tools not found - all tasks will be skipped' }}"
-  when: dbgtools_info.stat.exists
 - name: Loading windbg theme
   win_regedit:
     name: Default
@@ -101,84 +57,84 @@
   0x00,0x00,0x00,0x00,0x00,0x80,0xff,0xff,0xff,0x0f,0x00,0x00,0x00,0x00,0xff,0xff,0xff,0x0f,0x00,0x00,0x00,0x00,0xcd,0xff,0xff,
   0xff,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x03,0x00,0x10,0x00,0x04,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
   0x45,0x00,0x00,0x00,0x10,0x00,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00]
-  when: dbgtools_info.stat.exists or dbgtools_info_x86.stat.exists
+  when: dbgtools_path != '' or dbgtools_x86_path != ''
 - name: Copy windbg extensions package (x86)
   win_copy:
     src: winext_x86.zip
-    dest: "{{ dbgtools_info_x86.stat.path }}\\"
-  when: dbgtools_info_x86.stat.exists
+    dest: "{{ dbgtools_x86_path }}\\"
+  when: dbgtools_x86_path != ''
 - name: Unpack windbg extensions (x86)
   win_unzip:
     delete_archive: yes
-    src: "{{ dbgtools_info_x86.stat.path }}\\winext_x86.zip"
-    dest: "{{ dbgtools_info_x86.stat.path }}\\winext\\"
-  when: dbgtools_info_x86.stat.exists
+    src: "{{ dbgtools_x86_path }}\\winext_x86.zip"
+    dest: "{{ dbgtools_x86_path }}\\winext\\"
+  when: dbgtools_x86_path != ''
 - name: Copy windbg extensions package (x64)
   win_copy:
     src: winext_x64.zip
-    dest: "{{ dbgtools_info.stat.path }}\\"
-  when: dbgtools_info.stat.exists
+    dest: "{{ dbgtools_path }}\\"
+  when: dbgtools_path != ''
 - name: Unpack windbg extensions (x64)
   win_unzip:
     delete_archive: yes
-    src: "{{ dbgtools_info.stat.path }}\\winext_x64.zip"
-    dest: "{{ dbgtools_info.stat.path }}\\winext\\"
-  when: dbgtools_info.stat.exists
+    src: "{{ dbgtools_path }}\\winext_x64.zip"
+    dest: "{{ dbgtools_path }}\\winext\\"
+  when: dbgtools_path != ''
 - name: Download sosex (x86)
   win_get_url:
     url: http://www.stevestechspot.com/downloads/sosex_32.zip
-    dest: "{{ dbgtools_info_x86.stat.path }}\\"
-  when: dbgtools_info_x86.stat.exists
+    dest: "{{ dbgtools_x86_path }}\\"
+  when: dbgtools_x86_path != ''
 - name: Unpack sosex (x86)
   win_unzip:
     delete_archive: yes
-    src: "{{ dbgtools_info_x86.stat.path }}\\sosex_32.zip"
-    dest: "{{ dbgtools_info_x86.stat.path }}\\winext"
-  when: dbgtools_info_x86.stat.exists
+    src: "{{ dbgtools_x86_path }}\\sosex_32.zip"
+    dest: "{{ dbgtools_x86_path }}\\winext"
+  when: dbgtools_x86_path != ''
 - name: Download sosex (x64)
   win_get_url:
     url: http://www.stevestechspot.com/downloads/sosex_64.zip
-    dest: "{{ dbgtools_info.stat.path }}\\"
-  when: dbgtools_info.stat.exists
+    dest: "{{ dbgtools_path }}\\"
+  when: dbgtools_path != ''
 - name: Unpack sosex (x64)
   win_unzip:
     delete_archive: yes
-    src: "{{ dbgtools_info.stat.path }}\\sosex_64.zip"
-    dest: "{{ dbgtools_info.stat.path }}\\winext"
-  when: dbgtools_info.stat.exists
+    src: "{{ dbgtools_path }}\\sosex_64.zip"
+    dest: "{{ dbgtools_path }}\\winext"
+  when: dbgtools_path != ''
 - name: Prepare external symbols folder
   win_file: 
     path: "{{ symbols_path }}\\dbg"
     state: directory
-  when: dbgtools_info.stat.exists
+  when: dbgtools_path != ''
 - name: Prepare private symbols folder
   win_file:
     path: "{{ symbols_path }}\\private"
     state: directory
-  when: dbgtools_info.stat.exists
+  when: dbgtools_path != ''
 - name: Set _NT_SYMBOL_PATH
   win_environment:
     state: present
     name: _NT_SYMBOL_PATH
     level: machine
     value: "{{ symbols_path}}\\private;SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
-  when: dbgtools_info.stat.exists
+  when: dbgtools_path != ''
 - name: Setting PATH variable
   win_path:
     state: present
     scope: machine
-    elements: "{{ dbgtools_info.stat.path }}"
-  when: dbgtools_info.stat.exists
+    elements: "{{ dbgtools_path }}"
+  when: dbgtools_path != ''
 - name: Prepare dump context menu registry settings
   template:
     newline_sequence: \r\n
     src: windbg-ia-pde.j2
-    dest: "{{ dbgtools_info.stat.path }}\\windbg-ia-pde.reg"
-  when: dbgtools_info.stat.exists
+    dest: "{{ dbgtools_path }}\\windbg-ia-pde.reg"
+  when: dbgtools_path != ''
 - name: Install dump context menu (by Andrew Richards)
-  win_command: reg import "{{ dbgtools_info.stat.path }}\\windbg-ia-pde.reg"
-  when: dbgtools_info.stat.exists
+  win_command: reg import "{{ dbgtools_path }}\\windbg-ia-pde.reg"
+  when: dbgtools_path != ''
 - name: Remove .reg template win_file
   win_file:
-    path: "{{ dbgtools_info.stat.path }}\\windbg-ia-pde.reg"
+    path: "{{ dbgtools_path }}\\windbg-ia-pde.reg"
     state: absent

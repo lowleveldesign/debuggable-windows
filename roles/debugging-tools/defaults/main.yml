@@ -1,3 +1,5 @@
 ---
 tools_path: c:\tools
 symbols_path: c:\symbols
+dbgtools_path: ''
+dbgtools_x86_path: ''

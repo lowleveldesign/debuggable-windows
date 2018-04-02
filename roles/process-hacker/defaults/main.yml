@@ -1,3 +1,7 @@
 ---
-tools_path: c:\tools
-symbols_path: c:\symbols
+# path where the tools are stored
+tools_path: C:\tools
+# path where the debug symbols will reside
+symbols_path: C:\symbols
+# path to the Debugging Tools for Windows
+dbgtools_path: ''

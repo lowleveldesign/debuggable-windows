@@ -4,3 +4,5 @@ tools_path: C:\tools
 symbols_path: C:\symbols
 # path where procdump will save dumps
 dump_path: C:\dumps
+# path to the Debugging Tools for Windows
+dbgtools_path: ''

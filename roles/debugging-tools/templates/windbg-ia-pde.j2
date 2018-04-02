@@ -16,7 +16,7 @@ Windows Registry Editor Version 5.00
 @="WinDbg Post-Mortem Dump File"
 
 [HKEY_CLASSES_ROOT\WinDbg.DumpFile.1\DefaultIcon]
-@="\"{{ dbgtools_info.stat.path }}\\windbg.exe\",-3002"
+@="\"{{ dbgtools_path }}\\windbg.exe\",-3002"
 
 [HKEY_CLASSES_ROOT\WinDbg.DumpFile.1\shell]
 @="Open"
@@ -25,12 +25,12 @@ Windows Registry Editor Version 5.00
 @="Open x&64"
 
 [HKEY_CLASSES_ROOT\WinDbg.DumpFile.1\shell\Open\command]
-@="\"{{ dbgtools_info.stat.path }}\\windbg.exe\" -z \"%1\" -a pde.dll"
+@="\"{{ dbgtools_path }}\\windbg.exe\" -z \"%1\" -a pde.dll"
 
 [HKEY_CLASSES_ROOT\WinDbg.DumpFile.1\shell\Open_x86]
 @="Open x&86"
 
-{% if dbgtools_info_x86.stat.exists %}
+{% if dbgtools_x86_path != '' %}
 [HKEY_CLASSES_ROOT\WinDbg.DumpFile.1\shell\Open_x86\command]
-@="\"{{ dbgtools_info_x86.stat.path }}\\windbg.exe\" -z \"%1\" -a pde.dll"
+@="\"{{ dbgtools_x86_path }}\\windbg.exe\" -z \"%1\" -a pde.dll"
 {% endif %}

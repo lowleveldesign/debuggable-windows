@@ -3,6 +3,10 @@
   win_file:
     path: "{{ tools_path }}"
     state: directory
+- name: Make sure dump folder exists
+  win_file:
+    path: "{{ dump_path }}"
+    state: directory
 - name: Download Sysinternals Suite
   win_get_url:
     url: https://download.sysinternals.com/files/SysinternalsSuite.zip

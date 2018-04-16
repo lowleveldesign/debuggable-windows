@@ -130,12 +130,6 @@ The script adds Windows Performance Toolkit folder to the machine `PATH`, config
 - Original source: <https://github.com/lowleveldesign/wtrace/releases>
 - Downloaded to: `{{ tools_path }}\diag`
 
-### Command Line Configuration
-
-- In playbook: role `cmd`
-
-Configures settings of the default command line window. Switches the font to Consolas, makes the font bigger, increments the history depth, enables the quick edit mode, and much more.
-
 ### PowerShell Configuration
 
 - In playbook: role `powershell`

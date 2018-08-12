@@ -20,9 +20,9 @@ The playbook uses the following variables (you may modify them through command l
 
 Variable | Default Value | Description
 ---------|---------------|-------------
-**tools_path** | C:\tools | A folder where diagnostics tools will be downloaded and saved
-**symbols_path** | C:\symbols | A folder for storing cached PDB symbol files
-**dump_path** | C:\dumps | A place where procudmp will store dumps of the crashing applications
+**tools_path** | C:\Program Files\Tools | A folder where diagnostics tools will be downloaded and saved
+**symbols_path** | C:\Symbols | A folder for storing cached PDB symbol files
+**dump_path** | C:\Dumps | A place where procudmp will store dumps of the crashing applications
 **choco_apps** | [ 7zip, git ] | Chocolatey apps that should be installed while provisioning
 **git_psmodules_tocheckout** | [] | Git repositories that contain PowerShell modules that you want to use. Ansible will checkout them in the `{{ tools_path }}\powershell\modules` folder. This folder will be added to the user `PSModulePath` environment variable. The list should contain objects with **name** and **repo_url** properties, for example: `git_psmodules_tocheckout: [{ name: "WintellectPowerShell", repo_url: "https://github.com/Wintellect/WintellectPowerShell.git" }]`
 **psmodules_toinstall** | [] | Names of PowerShell modules which should be installed from the [PowerShell Gallery](https://www.powershellgallery.com/)
@@ -30,7 +30,7 @@ Variable | Default Value | Description
 Example provisioning command:
 
 ```bash
-$ ansible-playbook -k -i hosts.yml playbook-debuggable-windows.yml --extra-vars "hosts=windows-local ansible_user=admin"
+$ ansible-playbook -k -i hosts playbook-debuggable-windows.yml --extra-vars "hosts=windows-local ansible_user=admin"
 ```
 
 It is safe to run the playbook multiple times. It is the recommended way to upgrade the tools included in the set.

@@ -5,7 +5,7 @@
     state: directory
 - name: Download dnSpy
   win_get_url:
-    url: https://github.com/0xd4d/dnSpy/releases/download/v4.5.3/dnSpy.zip
+    url: https://github.com/0xd4d/dnSpy/releases/download/v5.0.0/dnSpy.zip
     dest: "{{ tools_path }}\\diag"
 - name: Extract dnSpy
   win_unzip:

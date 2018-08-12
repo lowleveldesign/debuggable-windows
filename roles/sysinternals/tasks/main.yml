@@ -98,7 +98,7 @@
 #    type: string
 #    data: "{{ tools_path }}\\sysinternals\\ZoomIt.exe"
 - name: Configure ProcDump as system debugger (AeDebug)
-  win_shell: "{{ tools_path }}\\sysinternals\\procdump.exe -i {{ dump_path }} -mp"
+  win_shell: "& \"{{ tools_path }}\\sysinternals\\procdump.exe\" -i \"{{ dump_path }}\" -mp"
   register: procdump_res
   ignore_errors: yes # FIXME: sometimes fails - to diagnose
 - debug:

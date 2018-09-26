@@ -4,14 +4,15 @@ ansible_winrm_transport: basic
 ansible_winrm_server_cert_validation: ignore
 
 # path where the tools are stored
-tools_path: c:\Program Files\Tools
+tools_path: c:\Program Files\tools
 # path where the debug symbols will reside
-symbols_path: C:\Symbols
+symbols_path: C:\symbols
 # path where prodcump will save dumps of fauly processes
-dump_path: C:\Dumps
+dump_path: C:\dumps
 
 choco_apps: [7zip,git]
 
 git_psmodules_tocheckout: []
 
 psmodules_toinstall: []
+

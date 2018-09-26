@@ -3,18 +3,21 @@
   win_file:
     path: "{{ tools_path }}\\powershell\\modules"
     state: directory
+
 - name: Setting PSModulePath
   win_path:
     state: present
     name: PSModulePath
     level: user
     elements: "{{ tools_path }}\\powershell\\modules"
+
 - name: Checkout modules from git repositories (requires git!)
   win_command: git clone {{ item.repo_url }} {{ item.name }}
   args:
     chdir: "{{ tools_path }}\\powershell\\modules"
     creates: "{{ tools_path }}\\powershell\\modules\\{{ item.name }}"
   loop: "{{ git_psmodules_tocheckout }}"
+
 - name: Install modules from the official repository
   win_psmodule:
     name: "{{ item }}"

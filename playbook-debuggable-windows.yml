@@ -20,7 +20,6 @@
 
   roles:
   - err
-  - notepad2
   - sysinternals
   - process-hacker
   - debugging-tools

@@ -3,22 +3,27 @@
   win_file:
     path: "{{ tools_path }}"
     state: directory
+
 - name: Download TouchCursor
   win_get_url:
     url: https://sourceforge.net/projects/touchcursor/files/1.7.1/TouchCursor-1.7.1.zip/download
     dest: "{{ tools_path }}\\touchcursor.zip"
+
 - name: Kill all running TouchCursor instances
   win_command: taskkill /F /IM touchcursor.exe
   ignore_errors: yes
+
 - name: Unzip binaries
   win_unzip:
     delete_archive: yes
     src: "{{ tools_path }}\\touchcursor.zip"
     dest: "{{ tools_path }}\\utils\\"
+
 - name: Copy config file
   win_copy:
     src: settings.cfg
     dest: "%APPDATA%\\TouchCursor\\"
+
 - name: Make TouchCursor start on Windows startup
   win_regedit:
     path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run

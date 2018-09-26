@@ -42,20 +42,11 @@ Almost all the tools are implemented as roles. You may comment out those that yo
 ```yaml
   ...
   roles:
-  - notepad2
   - sysinternals
   # - process-hacker
   - debugging-tools
   ...
 ```
-
-### Notepad2.mod to replace notepad
-
-- In playbook: role `notepad2`
-- Original source: <https://github.com/XhmikosR/notepad2-mod>
-- Downloaded to: `{{ tools_path }}\edit`
-
-A text editor similar to notepad on the outside, but much more powerful.
 
 ### Sysinternals Suite
 

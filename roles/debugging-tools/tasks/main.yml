@@ -107,17 +107,12 @@
     path: "{{ symbols_path }}\\dbg"
     state: directory
   when: dbgtools_path != ''
-- name: Prepare private symbols folder
-  win_file:
-    path: "{{ symbols_path }}\\private"
-    state: directory
-  when: dbgtools_path != ''
 - name: Set _NT_SYMBOL_PATH
   win_environment:
     state: present
     name: _NT_SYMBOL_PATH
     level: machine
-    value: "{{ symbols_path}}\\private;SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
+    value: "SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
   when: dbgtools_path != ''
 - name: Setting PATH variable
   win_path:

@@ -56,10 +56,6 @@
   win_file: 
     path: "{{ symbols_path }}\\dbg"
     state: directory
-- name: Prepare private symbols folder
-  win_file:
-    path: "{{ symbols_path }}\\private"
-    state: directory
 - name: Configure dbghelp path in Process Monitor
   win_regedit:
     path: HKCU:\Software\Sysinternals\Process Monitor
@@ -72,7 +68,7 @@
     path: HKCU:\Software\Sysinternals\Process Monitor
     name: SymbolPath
     type: string
-    data: "{{ symbols_path}}\\private;SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
+    data: "SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
 - name: Configure dbghelp path in Process Explorer
   win_regedit:
     path: HKCU:\Software\Sysinternals\Process Explorer
@@ -85,7 +81,7 @@
     path: HKCU:\Software\Sysinternals\Process Explorer
     name: SymbolPath
     type: string
-    data: "{{ symbols_path}}\\private;SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
+    data: "SRV*{{ symbols_path }}\\dbg*https://msdl.microsoft.com/download/symbols"
 - name: Add sysinternals to PATH
   win_path:
     state: present
